@@ -107,7 +107,6 @@ def depthFirstSearch(problem):
     while not fringe.isEmpty():
         node = fringe.pop()
         if problem.isGoalState(node[0]):
-            print "********", node[1]
             return node[1]
 
         if node[0] not in closed_set:
