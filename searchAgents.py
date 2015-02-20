@@ -369,11 +369,14 @@ def cornersHeuristic(state, problem):
     position = state[0]
     corners_reached = state[1]
 
-    manhattan_corner = [sum([abs(p - c) for p, c in zip(position, corner)]) 
-                        for i, corner in enumerate(corners) if not corners_reached[i]]
+    manhattan_corner = [sum([abs(p - c) for p, c in zip(position, corner)])
+                        for i, corner in enumerate(corners)
+                        if not corners_reached[i]]
 
     if not problem.isGoalState(state):
-        return min(manhattan_corner)
+        # return min(manhattan_corner)  # 1475
+        # return sum(manhattan_corner)/float(len(manhattan_corner))  # 1289
+        return max(manhattan_corner)  # 1136
     else:
         return 0.
 
