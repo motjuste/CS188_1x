@@ -115,8 +115,10 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    breadth_first_fringe = util.Queue()
+    breadth_first_strategy = lambda x: x.pop()
+
+    return generic_graph_search(problem, breadth_first_fringe, breadth_first_strategy)
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
