@@ -78,7 +78,21 @@ def generic_graph_search(problem, fringe, strategy):
 
     the parameter strategy defines how the fringe is managed
     """
-    util.raiseNotDefined()
+    closed_set = set()
+
+    fringe.push((problem.getStartState(), [], 0.))
+
+    while not fringe.isEmpty():
+        node = strategy(fringe)
+        if problem.isGoalState(node[0]):
+            return node[1]
+
+        if node[0] not in closed_set:
+            closed_set.add(node[0])
+            for child_node in problem.getSuccessors(node[0]):
+                fringe.push( (child_node[0], node[1]+[child_node[1]], node[2] + child_node[2]) )
+    else:
+        return []
 
 def depthFirstSearch(problem):
     """
@@ -94,23 +108,10 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    closed_set = set()
-    fringe = util.Stack()
-    
-    from game import Directions
-    fringe.push((problem.getStartState(), [], 0.))
+    depth_first_fringe = util.Stack()
+    depth_first_strategy = lambda x: x.pop()
 
-    while not fringe.isEmpty():
-        node = fringe.pop()
-        if problem.isGoalState(node[0]):
-            return node[1]
-
-        if node[0] not in closed_set:
-            closed_set.add(node[0])
-            for child_node in problem.getSuccessors(node[0]):
-                fringe.push( (child_node[0], node[1]+[child_node[1]], node[2] + child_node[2]) )
-    else:
-        return []
+    return generic_graph_search(problem, depth_first_fringe, depth_first_strategy)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
