@@ -106,14 +106,14 @@ def depthFirstSearch(problem):
 
     while not fringe.isEmpty():
         node = fringe.pop()
-        if problem.isGoalState(node):
+        if problem.isGoalState(node[0]):
             print "********", node[1]
             return node[1]
 
         if node[0] not in closed_set:
             closed_set.add(node[0])
             for child_node in problem.getSuccessors(node[0]):
-                fringe.push(child_node)
+                fringe.push( (child_node[0], node[1]+[child_node[1]], node[2] + child_node[2]) )
     else:
         return []
 
