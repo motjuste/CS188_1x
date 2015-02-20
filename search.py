@@ -72,6 +72,14 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def generic_graph_search(problem, fringe, strategy):
+    """
+    Generic Graph Search implementation, common to all the search functions
+
+    the parameter strategy defines how the fringe is managed
+    """
+    util.raiseNotDefined()
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -86,8 +94,28 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    print "Start:", problem.getStartState()
+    print "Is the Start a goal?", problem.isGoalState(problem.getStartState())
+    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+
+    closed_set = set()
+    fringe = util.Stack()
+    
+    from game import Directions
+    fringe.push((problem.getStartState(), [], 0.))
+
+    while not fringe.isEmpty():
+        node = fringe.pop()
+        if problem.isGoalState(node):
+            print "********", node[1]
+            return node[1]
+
+        if node[0] not in closed_set:
+            closed_set.add(node[0])
+            for child_node in problem.getSuccessors(node[0]):
+                fringe.push(child_node)
+    else:
+        return []
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
