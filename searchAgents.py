@@ -287,7 +287,8 @@ class CornersProblem(search.SearchProblem):
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
         # Please add any code here which you would like to use
         # in initializing the problem
-        "*** YOUR CODE HERE ***"
+        self.goal = set(self.corners)
+        self.visited = set()
 
     def getStartState(self):
         """
@@ -300,8 +301,7 @@ class CornersProblem(search.SearchProblem):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.goal <= self.visited.union(set([state]))
 
     def getSuccessors(self, state):
         """
