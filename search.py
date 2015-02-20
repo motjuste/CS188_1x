@@ -72,7 +72,7 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def generic_graph_search(problem, fringe, strategy):
+def generic_graph_search(problem, fringe, push_strategy, pop_strategy):
     """
     Generic Graph Search implementation, common to all the search functions
 
@@ -80,17 +80,19 @@ def generic_graph_search(problem, fringe, strategy):
     """
     closed_set = set()
 
-    fringe.push((problem.getStartState(), [], 0.))
+    push_strategy(fringe, (problem.getStartState(), [], 0.))
+    # fringe.push((problem.getStartState(), [], 0.))
 
     while not fringe.isEmpty():
-        node = strategy(fringe)
+        node = pop_strategy(fringe)
         if problem.isGoalState(node[0]):
             return node[1]
 
         if node[0] not in closed_set:
             closed_set.add(node[0])
             for child_node in problem.getSuccessors(node[0]):
-                fringe.push( (child_node[0], node[1]+[child_node[1]], node[2] + child_node[2]) )
+                push_strategy(fringe, (child_node[0], node[1]+[child_node[1]], node[2] + child_node[2]))
+                # fringe.push( (child_node[0], node[1]+[child_node[1]], node[2] + child_node[2]) )
     else:
         return []
 
@@ -108,37 +110,27 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    depth_first_fringe = util.Stack()
-    depth_first_strategy = lambda x: x.pop()
+    dfs_fringe = util.Stack()
+    dfs_push_strategy = lambda x, y: x.push(y)
+    dfs_pop_strategy = lambda x: x.pop()
 
-    return generic_graph_search(problem, depth_first_fringe, depth_first_strategy)
+    return generic_graph_search(problem, dfs_fringe, dfs_push_strategy, dfs_pop_strategy)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    breadth_first_fringe = util.Queue()
-    breadth_first_strategy = lambda x: x.pop()
+    bfs_fringe = util.Queue()
+    bfs_push_strategy = lambda x, y: x.push(y)
+    bfs_pop_strategy = lambda x: x.pop()
 
-    return generic_graph_search(problem, breadth_first_fringe, breadth_first_strategy)
+    return generic_graph_search(problem, bfs_fringe, bfs_push_strategy, bfs_pop_strategy)
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    closed_set = set()
-    fringe = util.PriorityQueue()
-    fringe.push((problem.getStartState(), [], 0.), 0.)
-    strategy = lambda x: x.pop()
-
-    while not fringe.isEmpty():
-        node = strategy(fringe)
-        if problem.isGoalState(node[0]):
-            return node[1]
-
-        if node[0] not in closed_set:
-            closed_set.add(node[0])
-            for child_node in problem.getSuccessors(node[0]):
-                fringe.push( (child_node[0], node[1]+[child_node[1]], node[2] + child_node[2]), 
-                    node[2] + child_node[2] )
-    else:
-        return []
+    ucs_fringe = util.PriorityQueue()
+    ucs_push_strategy = lambda x, y: x.push(y, y[2])
+    ucs_pop_strategy = lambda x: x.pop()
+    
+    return generic_graph_search(problem, ucs_fringe, ucs_push_strategy, ucs_pop_strategy)
 
 def nullHeuristic(state, problem=None):
     """
