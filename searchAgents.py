@@ -366,8 +366,7 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-    position = state[0]
-    corners_reached = state[1]
+    position, corners_reached = state
 
     manhattan_corner = [sum([abs(p - c) for p, c in zip(position, corner)])
                         for i, corner in enumerate(corners)
