@@ -471,9 +471,39 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    if not problem.isGoalState(state):
+
+        position, foodGrid = state
+        walls = problem.walls
+        
+        foodGrid_list = foodGrid.asList()
+        
+        if 'dist_goals' not in problem.heuristicInfo.keys():
+            manhattan = lambda x, y: sum([abs(xx - yy) for xx, yy in zip(x, y)])
+            dist_goals = dict()
+            for x in range(walls.width):
+                for y in range(walls.height):
+                    if not walls[x][y]:
+                        maze_manh_dist_goals = {((x, y), food):[mazeDistance((x, y), food, problem.startingGameState),
+                                                            manhattan((x, y), food)] for food in foodGrid_list}
+                        dist_goals.update(maze_manh_dist_goals)
+
+            problem.heuristicInfo['dist_goals'] = dist_goals
+        else:
+            dist_goals = problem.heuristicInfo['dist_goals']
+
+        # dist_goals_pos == [[maze_dist], [manh_dist]]
+        dist_goals_pos = [[dist_goals[(position, food)][m] for food in foodGrid_list] for m in [0, 1]]
+
+        return (
+                # max([
+                #      max(dist_goals_pos[1]),  # 9551
+                     max(dist_goals_pos[0])  # 4137
+                #    ])  
+               )
+
+    else:
+        return 0
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
