@@ -497,15 +497,15 @@ def foodHeuristic(state, problem):
 
             problem.heuristicInfo['dist_goals'] = dist_goals
 
-            with open("dist_goals_tricky.txt", "wt") as f:
-                for d in dist_goals.items():
-                    if d[0][0] in food_list:
-                        txt = "FOOD\n"
-                    elif d[0][0] == position:
-                        txt = "Position\n"
-                    else:
-                        txt = "\n"
-                    f.write(str(d) + txt)
+            # with open("dist_goals_tricky.txt", "wt") as f:
+            #     for d in dist_goals.items():
+            #         if d[0][0] in food_list:
+            #             txt = "FOOD\n"
+            #         elif d[0][0] == position:
+            #             txt = "Position\n"
+            #         else:
+            #             txt = "\n"
+            #         f.write(str(d) + txt)
 
 
         else:
