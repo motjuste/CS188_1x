@@ -496,8 +496,7 @@ def foodHeuristic(state, problem):
         else:
             dist_goals = problem.heuristicInfo['dist_goals']
         
-        return 
-            max([dist_goals[(position, food)] for food in foodGrid_list])  # 4137
+        return max([dist_goals[(position, food)] for food in foodGrid_list])  # 4137
     else:
         return 0
 
