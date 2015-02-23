@@ -74,7 +74,8 @@ class SearchAgent(Agent):
     """
 
     def __init__(self, fn='depthFirstSearch', prob='PositionSearchProblem', heuristic='nullHeuristic'):
-        # Warning: some advanced Python magic is employed below to find the right functions and problems
+        # Warning: some advanced Python magic is employed below to find the right 
+        # functions and problems
 
         # Get the search function from the name and heuristic
         if fn not in dir(search):
@@ -144,7 +145,8 @@ class PositionSearchProblem(search.SearchProblem):
     Note: this search problem is fully specified; you should NOT change it.
     """
 
-    def __init__(self, gameState, costFn = lambda x: 1, goal=(1,1), start=None, warn=True, visualize=True):
+    def __init__(self, gameState, costFn = lambda x: 1, 
+                    goal=(1,1), start=None, warn=True, visualize=True):
         """
         Stores the start and goal.
 
@@ -485,7 +487,8 @@ def foodHeuristic(state, problem):
 
             dist_goals = dict()
 
-            maze_dist_goals = lambda x, y: {((x, y), food):mazeDistance((x, y), food, problem.startingGameState)
+            maze_dist_goals = lambda x, y: {((x, y), food):
+                                                mazeDistance((x, y), food, problem.startingGameState)
                                     for food in food_list if not walls[x][y]}
 
             for x in range(walls.width): 
@@ -493,10 +496,38 @@ def foodHeuristic(state, problem):
                     dist_goals.update(maze_dist_goals(x, y))
 
             problem.heuristicInfo['dist_goals'] = dist_goals
+
+            with open("dist_goals_tricky.txt", "wt") as f:
+                for d in dist_goals.items():
+                    if d[0][0] in food_list:
+                        txt = "FOOD\n"
+                    elif d[0][0] == position:
+                        txt = "Position\n"
+                    else:
+                        txt = "\n"
+                    f.write(str(d) + txt)
+
+
         else:
             dist_goals = problem.heuristicInfo['dist_goals']
+
+        dist_food_food = []
+        for i, food in enumerate(foodGrid_list):
+            dist_food_goal = 0
+            for j in range(len(foodGrid_list) - 2):
+                k = (i + j) % len(foodGrid_list)
+                l = (k + 1) % len(foodGrid_list)
+                dist_food_goal += dist_goals[(foodGrid_list[k], foodGrid_list[l])]
+            
+            dist_food_food.append(dist_food_goal)
+            
+        dist_pos_food_goal = [dist_goals[(position, foodGrid_list[i])] + dist_food_food[i] 
+                                for i in range(len(foodGrid_list))]
+        index_min = [i for i, val in enumerate(dist_pos_food_goal) if val == min(dist_pos_food_goal)]
+        dist_best_food = dist_goals[(position, foodGrid_list[index_min[0]])]
         
         return max([dist_goals[(position, food)] for food in foodGrid_list])  # 4137
+        # return dist_best_food
     else:
         return 0
 
