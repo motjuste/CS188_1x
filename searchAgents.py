@@ -479,29 +479,25 @@ def foodHeuristic(state, problem):
         foodGrid_list = foodGrid.asList()
         
         if 'dist_goals' not in problem.heuristicInfo.keys():
-            manhattan = lambda x, y: sum([abs(xx - yy) for xx, yy in zip(x, y)])
+
+            food = problem.startingGameState.getFood()
+            food_list = food.asList()
+
             dist_goals = dict()
-            for x in range(walls.width):
-                for y in range(walls.height):
-                    if not walls[x][y]:
-                        maze_manh_dist_goals = {((x, y), food):[mazeDistance((x, y), food, problem.startingGameState),
-                                                            manhattan((x, y), food)] for food in foodGrid_list}
-                        dist_goals.update(maze_manh_dist_goals)
+
+            maze_dist_goals = lambda x, y: {((x, y), food):mazeDistance((x, y), food, problem.startingGameState)
+                                    for food in food_list if not walls[x][y]}
+
+            for x in range(walls.width): 
+                for y in range(walls.height): 
+                    dist_goals.update(maze_dist_goals(x, y))
 
             problem.heuristicInfo['dist_goals'] = dist_goals
         else:
             dist_goals = problem.heuristicInfo['dist_goals']
-
-        # dist_goals_pos == [[maze_dist], [manh_dist]]
-        dist_goals_pos = [[dist_goals[(position, food)][m] for food in foodGrid_list] for m in [0, 1]]
-
-        return (
-                # max([
-                #      max(dist_goals_pos[1]),  # 9551
-                     max(dist_goals_pos[0])  # 4137
-                #    ])  
-               )
-
+        
+        return 
+            max([dist_goals[(position, food)] for food in foodGrid_list])  # 4137
     else:
         return 0
 
